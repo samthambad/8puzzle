@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
-import java.util.Arrays;
 import java.util.Comparator;
 
 public class Solver {
@@ -25,7 +24,7 @@ public class Solver {
         while (true) {
             Node parent = pq.delMin();
             // System.out.println("parent deleted: " + parent);
-            if (parent.board.manhattan() == 0) {
+            if (parent.manhattanVal == 0) {
                 solutionStack.push(parent.board);
                 break;
             }
@@ -49,21 +48,25 @@ public class Solver {
         Board board;
         int moves;
         Node prevNode;
+        int hammingVal;
+        int manhattanVal;
 
         private Node(Board board, int moves, Node prevNode) {
             this.board = board;
             this.moves = moves;
             this.prevNode = prevNode;
+            this.hammingVal = board.hamming();
+            this.manhattanVal = board.manhattan();
         }
     }
 
     private Comparator<Node> pOrder() {
         return new Comparator<Node>() {
             public int compare(Node n1, Node n2) {
-                if (n1.board.manhattan() + n1.moves < n2.board.manhattan() + n2.moves) {
+                if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
                     return 1;
                 }
-                else if (n1.board.manhattan() + n1.moves > n2.board.manhattan() + n2.moves) {
+                else if (n1.manhattanVal + n1.moves > n2.manhattanVal + n2.moves) {
                     return -1;
                 }
                 else return 0;
