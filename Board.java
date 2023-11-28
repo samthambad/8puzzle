@@ -5,19 +5,25 @@ public class Board {
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
-    private int[][] board;
-    private int length;
+    private int[][] boardArray;
 
+    
+    private int length;
+    
     public Board(int[][] tiles) {
-        board = tiles;
-        length = board.length;
+        boardArray = tiles;
+        length = boardArray[0].length;
+    }
+
+    private int[][] getBoardArray() {
+        return boardArray;
     }
 
     // string representation of this board
     public String toString() {
         String toreturn = "";
         toreturn += dimension() + "\n";
-        for (int[] row : board) {
+        for (int[] row : boardArray) {
             for (int num : row) {
                 toreturn += " ";
                 toreturn += "" + num;
@@ -30,7 +36,7 @@ public class Board {
 
     // board dimension n
     public int dimension() {
-        length = board[0].length;
+        length = boardArray[0].length;
         return length;
     }
 
@@ -41,13 +47,13 @@ public class Board {
         // 1,0 has 4
         // dimen*1st digit + 2nd digit+1
         int counter = 0;
-        for (int i = 0; i < board[0].length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
+        for (int i = 0; i < boardArray[0].length; i++) {
+            for (int j = 0; j < boardArray[0].length; j++) {
                 // don't count the empty spot
-                if (board[i][j] == 0) {
+                if (boardArray[i][j] == 0) {
                     continue;
                 }
-                else if (board[i][j] != length * i + j + 1) {
+                else if (boardArray[i][j] != length * i + j + 1) {
                     counter++;
                 }
             }
@@ -59,14 +65,14 @@ public class Board {
     public int manhattan() {
         // go through all the spots
         int accumulator = 0;
-        for (int i = 0; i < board[0].length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
-                if (board[i][j] == 0) {
+        for (int i = 0; i < boardArray[0].length; i++) {
+            for (int j = 0; j < boardArray[0].length; j++) {
+                if (boardArray[i][j] == 0) {
                     continue;
                 }
                 // whenever there is a point that doesn't match
-                if (board[i][j] != length * i + j + 1) {
-                    int num = board[i][j];
+                if (boardArray[i][j] != length * i + j + 1) {
+                    int num = boardArray[i][j];
                     int row = num / length;
                     int col = (num - (row * length)) - 1;
                     int distance = Math.abs(row - i) + Math.abs(col - j);
@@ -89,9 +95,9 @@ public class Board {
             throw new IllegalArgumentException("Wrong type of argument!");
         Board myy = (Board) y;
         if (this.length == myy.length) {
-            for (int i = 0; i < board[0].length; i++) {
-                for (int j = 0; j < board[0].length; j++) {
-                    if (this.board[i][j] != myy.board[i][j]) {
+            for (int i = 0; i < boardArray[0].length; i++) {
+                for (int j = 0; j < boardArray[0].length; j++) {
+                    if (this.boardArray[i][j] != myy.boardArray[i][j]) {
                         return false;
                     }
                 }
@@ -109,9 +115,9 @@ public class Board {
         int row = 0;
         int col = 0;
         Queue<Board> neighbourQueue = new Queue<>();
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board.length; j++) {
-                if (board[i][j] == 0) {
+        for (int i = 0; i < boardArray.length; i++) {
+            for (int j = 0; j < boardArray.length; j++) {
+                if (boardArray[i][j] == 0) {
                     row = i;
                     col = j;
                     index = i * length + j;
@@ -121,10 +127,10 @@ public class Board {
         // checking neighbours
         // check up
         if (index - length >= 0) {
-            int[][] boardCopy = new int[board.length][board.length];
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board.length; j++) {
-                    boardCopy[i][j] = board[i][j];
+            int[][] boardCopy = new int[boardArray.length][boardArray.length];
+            for (int i = 0; i < boardArray.length; i++) {
+                for (int j = 0; j < boardArray.length; j++) {
+                    boardCopy[i][j] = boardArray[i][j];
                 }
             }
             int tmp = boardCopy[row][col];
@@ -137,10 +143,10 @@ public class Board {
         }
         // check down
         if (index + length >= 0) {
-            int[][] boardCopy = new int[board.length][board.length];
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board.length; j++) {
-                    boardCopy[i][j] = board[i][j];
+            int[][] boardCopy = new int[boardArray.length][boardArray.length];
+            for (int i = 0; i < boardArray.length; i++) {
+                for (int j = 0; j < boardArray.length; j++) {
+                    boardCopy[i][j] = boardArray[i][j];
                 }
             }
             int tmp = boardCopy[row][col];
@@ -153,10 +159,10 @@ public class Board {
         }
         // check left
         if (index - 1 >= 0) {
-            int[][] boardCopy = new int[board.length][board.length];
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board.length; j++) {
-                    boardCopy[i][j] = board[i][j];
+            int[][] boardCopy = new int[boardArray.length][boardArray.length];
+            for (int i = 0; i < boardArray.length; i++) {
+                for (int j = 0; j < boardArray.length; j++) {
+                    boardCopy[i][j] = boardArray[i][j];
                 }
             }
             int tmp = boardCopy[row][col];
@@ -169,13 +175,13 @@ public class Board {
         }
         // check right
         if (index + 1 >= 0) {
-            int[][] boardCopy = new int[board.length][board.length];
-            for (int i = 0; i < board.length; i++) {
-                for (int j = 0; j < board.length; j++) {
-                    boardCopy[i][j] = board[i][j];
+            int[][] boardCopy = new int[boardArray.length][boardArray.length];
+            for (int i = 0; i < boardArray.length; i++) {
+                for (int j = 0; j < boardArray.length; j++) {
+                    boardCopy[i][j] = boardArray[i][j];
                 }
             }
-            int tmp = board[row][col];
+            int tmp = boardArray[row][col];
             if (col < length - 1) {
                 boardCopy[row][col] = boardCopy[row][col + 1];
                 boardCopy[row][col + 1] = tmp;
@@ -199,11 +205,11 @@ public class Board {
         } while (otherRow == origRow || otherCol == origCol);
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
-                boardCopy[i][j] = board[i][j];
+                boardCopy[i][j] = boardArray[i][j];
             }
 
         }
-        int tmp = board[origRow][origCol];
+        int tmp = boardArray[origRow][origCol];
         boardCopy[origRow][origCol] = boardCopy[otherRow][otherCol];
         boardCopy[otherRow][otherCol] = tmp;
         Board twinBoard = new Board(boardCopy);

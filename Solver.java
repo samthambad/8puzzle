@@ -3,13 +3,14 @@ import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class Solver {
 
 
     MinPQ<Node> pq;
-    Stack<Board> solutionPath = new Stack<>();
+    Stack<Board> solutionStack = new Stack<>();
     private int numMoves = 0;
 
     public Solver(Board initial) {
@@ -25,7 +26,7 @@ public class Solver {
             Node parent = pq.delMin();
             // System.out.println("parent deleted: " + parent);
             if (parent.board.manhattan() == 0) {
-                solutionPath.push(parent.board);
+                solutionStack.push(parent.board);
                 break;
             }
             numMoves++;
@@ -33,10 +34,13 @@ public class Solver {
             Iterable<Board> neighbours = parent.board.neighbors();
             for (Board n : neighbours) {
                 Node newNode = new Node(n, numMoves, parent);
-                pq.insert(newNode);
+                // if the stack has nodes, check if the top one = the one being added
+                if (!(!(solutionStack.isEmpty()) && n.equals(solutionStack.peek()))) {
+                    pq.insert(newNode);
+                }
             }
         }
-        System.out.println(solutionPath);
+        System.out.println(solutionStack);
 
     }
 
@@ -54,7 +58,7 @@ public class Solver {
     }
 
     private Comparator<Node> pOrder() {
-        Comparator<Node> nodeComparator = new Comparator<Node>() {
+        return new Comparator<Node>() {
             public int compare(Node n1, Node n2) {
                 if (n1.board.manhattan() + n1.moves < n2.board.manhattan() + n2.moves) {
                     return 1;
@@ -65,15 +69,11 @@ public class Solver {
                 else return 0;
             }
         };
-        return nodeComparator;
     }
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        if (solutionPath.peek().hamming() == 0) {
-            return true;
-        }
-        return false;
+        return solutionStack.peek().hamming() == 0;
     }
 
     // min number of moves to solve initial board; -1 if unsolvable
@@ -86,7 +86,7 @@ public class Solver {
 
     // sequence of boards in a shortest solution; null if unsolvable
     public Iterable<Board> solution() {
-        return solutionPath;
+        return solutionStack;
     }
 
     // test client (see below)
