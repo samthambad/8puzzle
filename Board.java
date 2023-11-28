@@ -10,6 +10,7 @@ public class Board {
 
     public Board(int[][] tiles) {
         board = tiles;
+        length = board.length;
     }
 
     // string representation of this board
@@ -127,10 +128,12 @@ public class Board {
                 }
             }
             int tmp = boardCopy[row][col];
-            boardCopy[row][col] = boardCopy[row - 1][col];
-            boardCopy[row - 1][col] = tmp;
-            Board neighborBoard = new Board(boardCopy);
-            neighbourQueue.enqueue(neighborBoard);
+            if (row > 0) {
+                boardCopy[row][col] = boardCopy[row - 1][col];
+                boardCopy[row - 1][col] = tmp;
+                Board neighborBoard = new Board(boardCopy);
+                neighbourQueue.enqueue(neighborBoard);
+            }
         }
         // check down
         if (index + length >= 0) {
@@ -141,10 +144,12 @@ public class Board {
                 }
             }
             int tmp = boardCopy[row][col];
-            boardCopy[row][col] = boardCopy[row + 1][col];
-            boardCopy[row + 1][col] = tmp;
-            Board neighborBoard = new Board(boardCopy);
-            neighbourQueue.enqueue(neighborBoard);
+            if (row < length - 1) {
+                boardCopy[row][col] = boardCopy[row + 1][col];
+                boardCopy[row + 1][col] = tmp;
+                Board neighborBoard = new Board(boardCopy);
+                neighbourQueue.enqueue(neighborBoard);
+            }
         }
         // check left
         if (index - 1 >= 0) {
@@ -155,10 +160,12 @@ public class Board {
                 }
             }
             int tmp = boardCopy[row][col];
-            boardCopy[row][col] = boardCopy[row][col - 1];
-            boardCopy[row][col - 1] = tmp;
-            Board neighborBoard = new Board(boardCopy);
-            neighbourQueue.enqueue(neighborBoard);
+            if (col > 0) {
+                boardCopy[row][col] = boardCopy[row][col - 1];
+                boardCopy[row][col - 1] = tmp;
+                Board neighborBoard = new Board(boardCopy);
+                neighbourQueue.enqueue(neighborBoard);
+            }
         }
         // check right
         if (index + 1 >= 0) {
@@ -169,10 +176,12 @@ public class Board {
                 }
             }
             int tmp = board[row][col];
-            boardCopy[row][col] = boardCopy[row][col + 1];
-            boardCopy[row][col + 1] = tmp;
-            Board neighborBoard = new Board(boardCopy);
-            neighbourQueue.enqueue(neighborBoard);
+            if (col < length - 1) {
+                boardCopy[row][col] = boardCopy[row][col + 1];
+                boardCopy[row][col + 1] = tmp;
+                Board neighborBoard = new Board(boardCopy);
+                neighbourQueue.enqueue(neighborBoard);
+            }
         }
         return neighbourQueue;
     }

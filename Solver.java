@@ -23,6 +23,7 @@ public class Solver {
         numMoves = 0;
         while (true) {
             Node parent = pq.delMin();
+            // System.out.println("parent deleted: " + parent);
             if (parent.board.manhattan() == 0) {
                 solutionPath.push(parent.board);
                 break;
@@ -101,8 +102,9 @@ public class Solver {
         Board initial = new Board(tiles);
 
         // solve the puzzle
+        System.out.println("before solver");
         Solver solver = new Solver(initial);
-
+        System.out.println("solver completed");
         // print solution to standard output
         if (!solver.isSolvable())
             StdOut.println("No solution possible");
