@@ -224,16 +224,18 @@ public class Board {
         int otherCol = StdRandom.uniformInt(length);
 
         // exchange the pair of tiles
-        while (otherRow == origRow){
+        while (boardCopy[otherRow][otherCol] == 0) {
+            otherRow = StdRandom.uniformInt(length);
+            otherCol = StdRandom.uniformInt(length);
+        }
+        while (otherRow == origRow) {
             otherRow = StdRandom.uniformInt(length);
         }
         while (otherCol == origCol) {
             otherCol = StdRandom.uniformInt(length);
         }
-        while (boardCopy[otherRow][otherCol] == 0) {
-            otherRow = StdRandom.uniformInt(length);
-            otherCol = StdRandom.uniformInt(length);
-        }
+        System.out.println("r: " + origRow + " c: "+ origCol);
+        System.out.println("r: " + otherCol + " c: "+ otherCol);
         int tmp = boardCopy[origRow][origCol];
         boardCopy[origRow][origCol] = boardCopy[otherRow][otherCol];
         boardCopy[otherRow][otherCol] = tmp;
@@ -241,8 +243,8 @@ public class Board {
     }
 
     // unit testing (not graded)
-    public static void main(String[] args){
-        int[][] arr ={{1,2},{0,3}};
+    public static void main(String[] args) {
+        int[][] arr = {{1, 3}, {0, 2}};
         Board b = new Board(arr);
         for (int[] row : (b.twin().boardArray)) {
             System.out.println(Arrays.toString(row));
