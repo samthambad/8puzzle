@@ -218,20 +218,13 @@ public class Board {
             origCol = StdRandom.uniformInt(length);
         } while (boardCopy[origRow][origCol] == 0);
         
-        
         // choose which tiles to exchange
         int otherRow = StdRandom.uniformInt(length);
         int otherCol = StdRandom.uniformInt(length);
 
         // exchange the pair of tiles
-        while (boardCopy[otherRow][otherCol] == 0) {
+        while (boardCopy[otherRow][otherCol] == 0 || (otherRow == origRow) || (otherCol == origCol) ) {
             otherRow = StdRandom.uniformInt(length);
-            otherCol = StdRandom.uniformInt(length);
-        }
-        while (otherRow == origRow) {
-            otherRow = StdRandom.uniformInt(length);
-        }
-        while (otherCol == origCol) {
             otherCol = StdRandom.uniformInt(length);
         }
         System.out.println("r: " + origRow + " c: "+ origCol);
