@@ -1,3 +1,6 @@
+
+import java.util.Arrays;
+
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -71,7 +74,7 @@ public class Board {
                     // find the correct index from number
                     int num = boardArray[i][j];
                     int row = 0;
-                    if (num%length != 0){
+                    if (num % length != 0) {
                         row = num/length;
                     }
                     else {
@@ -94,7 +97,7 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (y == null){
+        if (y == null) {
             return false;
         }
         Board myy = (Board) y;
@@ -216,14 +219,21 @@ public class Board {
         } while (boardCopy[origRow][origCol] == 0);
         
         
-        int otherRow;
-        int otherCol;
         // choose which tiles to exchange
-        do {
+        int otherRow = StdRandom.uniformInt(length);
+        int otherCol = StdRandom.uniformInt(length);
+
+        // exchange the pair of tiles
+        while (otherRow == origRow){
+            otherRow = StdRandom.uniformInt(length);
+        }
+        while (otherCol == origCol) {
+            otherCol = StdRandom.uniformInt(length);
+        }
+        while (boardCopy[otherRow][otherCol] == 0) {
             otherRow = StdRandom.uniformInt(length);
             otherCol = StdRandom.uniformInt(length);
-        } while (otherRow == origRow || otherCol == origCol || boardCopy[origRow][origCol] == 0);
-        // exchange the pair of tiles
+        }
         int tmp = boardCopy[origRow][origCol];
         boardCopy[origRow][origCol] = boardCopy[otherRow][otherCol];
         boardCopy[otherRow][otherCol] = tmp;
@@ -231,6 +241,12 @@ public class Board {
     }
 
     // unit testing (not graded)
-    // public static void main(String[] args)
+    public static void main(String[] args){
+        int[][] arr ={{1,2},{0,3}};
+        Board b = new Board(arr);
+        for (int[] row : (b.twin().boardArray)) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
 
 }

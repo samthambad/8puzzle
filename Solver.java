@@ -46,14 +46,12 @@ public class Solver {
         Board board;
         int moves;
         Node prevNode;
-        int hammingVal;
         int manhattanVal;
 
         private Node(Board board, int moves, Node prevNode) {
             this.board = board;
             this.moves = moves;
             this.prevNode = prevNode;
-            this.hammingVal = board.hamming();
             this.manhattanVal = board.manhattan();
         }
     }
