@@ -2,7 +2,7 @@
 
 import edu.princeton.cs.algs4.Queue;
 
-public class Board {
+public final class Board {
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -12,8 +12,13 @@ public class Board {
     private int length;
     
     public Board(int[][] tiles) {
-        boardArray = tiles;
-        length = boardArray[0].length;
+        boardArray = new int[tiles.length][tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles.length; j++) {
+                boardArray[i][j] = tiles[i][j];
+            }
+        }
+        length = boardArray.length;
     }
 
     // string representation of this board
@@ -95,7 +100,7 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (y == null) {
+        if (y == null || y.getClass() != Board.class) {
             return false;
         }
         Board myy = (Board) y;

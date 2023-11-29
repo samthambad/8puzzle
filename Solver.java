@@ -22,8 +22,8 @@ public class Solver {
         numMoves = 0;
         while (true) {
             Node parent = pq.delMin();
-            // System.out.println("parent deleted: " + parent);
             if (parent.manhattanVal == 0) {
+                System.out.println("parent deleted: " + parent);
                 solutionStack.push(parent.board);
                 break;
             }
@@ -32,7 +32,7 @@ public class Solver {
             Iterable<Board> neighbours = parent.board.neighbors();
             for (Board n : neighbours) {
                 Node newNode = new Node(n, numMoves, parent);
-                // if the stack has nodes, check if the top one = the one being added
+                // only add nodes which are not the same as removed node
                 if (!(!(solutionStack.isEmpty()) && n.equals(solutionStack.peek()))) {
                     pq.insert(newNode);
                 }
