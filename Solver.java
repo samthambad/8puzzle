@@ -8,8 +8,7 @@ import java.util.Comparator;
 public class Solver {
 
 
-    MinPQ<Node> pq;
-    Stack<Board> solutionStack = new Stack<>();
+    private Stack<Board> solutionStack = new Stack<>();
     private int numMoves = 0;
 
     public Solver(Board initial) {
@@ -18,7 +17,7 @@ public class Solver {
         }
         // node = board, num of moves to reach board, previous node
         Node first = new Node(initial, 0, null);
-        pq = new MinPQ<>(pOrder());
+        MinPQ<Node> pq = new MinPQ<>(pOrder());
         pq.insert(first);
         numMoves = 0;
         while (true) {
@@ -39,7 +38,6 @@ public class Solver {
                 }
             }
         }
-        System.out.println(solutionStack);
 
     }
 
@@ -76,7 +74,7 @@ public class Solver {
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        return solutionStack.peek().hamming() == 0;
+        return solutionStack.peek().isGoal();
     }
 
     // min number of moves to solve initial board; -1 if unsolvable
@@ -105,9 +103,7 @@ public class Solver {
         Board initial = new Board(tiles);
 
         // solve the puzzle
-        System.out.println("before solver");
         Solver solver = new Solver(initial);
-        System.out.println("solver completed");
         // print solution to standard output
         if (!solver.isSolvable())
             StdOut.println("No solution possible");

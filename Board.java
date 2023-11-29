@@ -15,23 +15,19 @@ public class Board {
         length = boardArray[0].length;
     }
 
-    private int[][] getBoardArray() {
-        return boardArray;
-    }
-
     // string representation of this board
     public String toString() {
-        String toreturn = "";
-        toreturn += dimension() + "\n";
+        StringBuilder toreturn = new StringBuilder();
+        toreturn.append(dimension() + "\n");
         for (int[] row : boardArray) {
             for (int num : row) {
-                toreturn += " ";
-                toreturn += "" + num;
-                toreturn += " ";
+                toreturn.append(" "); 
+                toreturn.append(num);
+                toreturn.append(" "); 
             }
-            toreturn += "\n";
+            toreturn.append("\n");
         }
-        return toreturn;
+        return toreturn.toString();
     }
 
     // board dimension n
@@ -65,16 +61,23 @@ public class Board {
     public int manhattan() {
         // go through all the spots
         int accumulator = 0;
-        for (int i = 0; i < boardArray[0].length; i++) {
-            for (int j = 0; j < boardArray[0].length; j++) {
+        for (int i = 0; i < length; i++) {
+            for (int j = 0; j < length; j++) {
                 if (boardArray[i][j] == 0) {
                     continue;
                 }
                 // whenever there is a point that doesn't match
-                if (boardArray[i][j] != length * i + j + 1) {
+                if (boardArray[i][j] != (length * i) + j + 1) {
+                    // find the correct index from number
                     int num = boardArray[i][j];
-                    int row = num / length;
-                    int col = (num - (row * length)) - 1;
+                    int row = 0;
+                    if (num%length != 0){
+                        row = num/length;
+                    }
+                    else {
+                        row = (num/length)-1;
+                    }
+                    int col = num - (length*row)-1;
                     int distance = Math.abs(row - i) + Math.abs(col - j);
                     accumulator += distance;
                 }
@@ -91,7 +94,7 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (y.getClass() != this.getClass())
+        if (y.getClass() != this.getClass() || y == null)
             throw new IllegalArgumentException("Wrong type of argument!");
         Board myy = (Board) y;
         if (this.length == myy.length) {
