@@ -5,7 +5,7 @@ public class Board {
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
-    private int[][] boardArray;
+    private final int[][] boardArray;
 
     
     private int length;
@@ -94,8 +94,9 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (y.getClass() != this.getClass() || y == null)
-            throw new IllegalArgumentException("Wrong type of argument!");
+        if (y == null){
+            return false;
+        }
         Board myy = (Board) y;
         if (this.length == myy.length) {
             for (int i = 0; i < boardArray[0].length; i++) {
@@ -199,26 +200,34 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
+        // ignore the O tiles
         int[][] boardCopy = new int[length][length];
-        int origRow = StdRandom.uniformInt(length);
-        int origCol = StdRandom.uniformInt(length);
-        int otherRow;
-        int otherCol;
-        do {
-            otherRow = StdRandom.uniformInt(length);
-            otherCol = StdRandom.uniformInt(length);
-        } while (otherRow == origRow || otherCol == origCol);
         for (int i = 0; i < length; i++) {
             for (int j = 0; j < length; j++) {
                 boardCopy[i][j] = boardArray[i][j];
             }
-
+            
         }
-        int tmp = boardArray[origRow][origCol];
+        int origRow = 0;
+        int origCol = 0;
+        do {
+            origRow = StdRandom.uniformInt(length);
+            origCol = StdRandom.uniformInt(length);
+        } while (boardCopy[origRow][origCol] == 0);
+        
+        
+        int otherRow;
+        int otherCol;
+        // choose which tiles to exchange
+        do {
+            otherRow = StdRandom.uniformInt(length);
+            otherCol = StdRandom.uniformInt(length);
+        } while (otherRow == origRow || otherCol == origCol || boardCopy[origRow][origCol] == 0);
+        // exchange the pair of tiles
+        int tmp = boardCopy[origRow][origCol];
         boardCopy[origRow][origCol] = boardCopy[otherRow][otherCol];
         boardCopy[otherRow][otherCol] = tmp;
-        Board twinBoard = new Board(boardCopy);
-        return twinBoard;
+        return new Board(boardCopy);
     }
 
     // unit testing (not graded)
