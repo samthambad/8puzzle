@@ -1,8 +1,6 @@
 
-import java.util.Arrays;
 
 import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
 
@@ -203,45 +201,37 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        // ignore the O tiles
         int[][] boardCopy = new int[length][length];
-        for (int i = 0; i < length; i++) {
-            for (int j = 0; j < length; j++) {
+        for (int i = 0; i < boardCopy.length; i++) {
+            for (int j = 0; j < boardCopy.length; j++) {
                 boardCopy[i][j] = boardArray[i][j];
             }
-            
         }
-        int origRow = 0;
-        int origCol = 0;
-        do {
-            origRow = StdRandom.uniformInt(length);
-            origCol = StdRandom.uniformInt(length);
-        } while (boardCopy[origRow][origCol] == 0);
-        
-        // choose which tiles to exchange
-        int otherRow = StdRandom.uniformInt(length);
-        int otherCol = StdRandom.uniformInt(length);
-
-        // exchange the pair of tiles
-        while (boardCopy[otherRow][otherCol] == 0 || (otherRow == origRow) || (otherCol == origCol) ) {
-            otherRow = StdRandom.uniformInt(length);
-            otherCol = StdRandom.uniformInt(length);
+        // ignore the O tiles
+        // it is ok to return the same copy every time
+        if (boardArray[0][0] == 0) {
+            int tmp = boardCopy[0][1];
+            boardCopy[0][1] = boardCopy[1][1];
+            boardCopy[1][1] = tmp;
         }
-        System.out.println("r: " + origRow + " c: "+ origCol);
-        System.out.println("r: " + otherCol + " c: "+ otherCol);
-        int tmp = boardCopy[origRow][origCol];
-        boardCopy[origRow][origCol] = boardCopy[otherRow][otherCol];
-        boardCopy[otherRow][otherCol] = tmp;
+        else if (boardArray[0][1] == 0) {
+            int tmp = boardCopy[0][0];
+            boardCopy[0][0] = boardCopy[1][1];
+            boardCopy[1][1] = tmp;
+        }
+        else {
+            int tmp = boardCopy[0][0];
+            boardCopy[0][0] = boardCopy[0][1];
+            boardCopy[0][1] = tmp;
+        }
         return new Board(boardCopy);
-    }
-
     // unit testing (not graded)
-    public static void main(String[] args) {
-        int[][] arr = {{1, 3}, {0, 2}};
-        Board b = new Board(arr);
-        for (int[] row : (b.twin().boardArray)) {
-            System.out.println(Arrays.toString(row));
-        }
     }
-
+    // public static void main(String[] args) {
+    //     int[][] arr = {{1, 3}, {0, 2}};
+    //     Board b = new Board(arr);
+    //     for (int[] row : (b.twin().boardArray)) {
+    //         System.out.println(Arrays.toString(row));
+    //     }
+    // }
 }
