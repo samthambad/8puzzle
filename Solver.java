@@ -23,46 +23,38 @@ public class Solver {
         Node nodeTwin = new Node(firstBoard.twin(), 0, null);
         MinPQ<Node> pq = new MinPQ<>(pOrder);
         MinPQ<Node> pqTwin = new MinPQ<>(pOrder);
-        System.out.println("adding first to pq");
         pq.insert(node);
         numMoves = 0;
         Iterable<Board> neighbours;
         Iterable<Board> neighboursTwin;
         while (true) {
+            numMoves++;
             // add neighbors for every min removed
             neighbours = node.board.neighbors();
             neighboursTwin = nodeTwin.board.neighbors();
             for (Board n : neighbours) {
-                // System.out.println("adding a neighbor");
                 // only add nodes which are not the same as removed node
                 if (n.equals(node.board)) {
-                    // System.out.println("neighbor is same as removed");
                     continue;
                 }
                 Node newNode = new Node(n, numMoves, node);
-                // System.out.println("adding new node");
                 pq.insert(newNode);
             }
             for (Board nTwin : neighboursTwin) {
-                // System.out.println("adding a neighbor");
                 // only add nodes which are not the same as removed node
                 if (nTwin.equals(nodeTwin.board)) {
-                    // System.out.println("neighbor is same as removed");
                     continue;
                 }
                 Node newNode = new Node(nTwin, numMoves, node);
-                // System.out.println("adding new node twin");
                 pqTwin.insert(newNode);
             }
             node = pq.delMin();
             nodeTwin = pqTwin.delMin();
-            // System.out.println("pq not empty" + parent.toString());
             if (node.board.isGoal()) {
-                System.out.println("parent deleted: " + node);
                 solutionStack.push(node.board);
                 while (node.prevNode != null) {
-                    Node nodePrev = node.prevNode;
-                    solutionStack.push(nodePrev.board);
+                    node = node.prevNode;
+                    solutionStack.push(node.board);
                 }
                 solvable = true;
                 break;
@@ -71,7 +63,6 @@ public class Solver {
                 solvable = false;
                 break;
             }
-            numMoves++;
         }
 
     }
@@ -93,10 +84,10 @@ public class Solver {
 
     private Comparator<Node> pOrder = new Comparator<Node>() {
         public int compare(Node n1, Node n2) {
-            if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
+            if (n1.manhattanVal + n1.moves > n2.manhattanVal + n2.moves) {
                 return 1;
             }
-            else if (n1.manhattanVal + n1.moves > n2.manhattanVal + n2.moves) {
+            else if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
                 return -1;
             }
             else return 0;
