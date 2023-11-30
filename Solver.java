@@ -33,24 +33,27 @@ public class Solver {
             neighboursTwin = nodeTwin.board.neighbors();
             for (Board n : neighbours) {
                 // only add nodes which are not the same as removed node
-                if (n.equals(node.board)) {
+                if (node.prevNode != null && n.equals(node.prevNode.board)) {
                     continue;
                 }
-                Node newNode = new Node(n, numMoves, node);
+                Node newNode = new Node(n, node.moves + 1, node);
                 pq.insert(newNode);
+                StdOut.println("new Node inserted");
             }
             for (Board nTwin : neighboursTwin) {
                 // only add nodes which are not the same as removed node
-                if (nTwin.equals(nodeTwin.board)) {
+                if (node.prevNode != null && nTwin.equals(nodeTwin.prevNode.board)) {
                     continue;
                 }
-                Node newNode = new Node(nTwin, numMoves, node);
+                Node newNode = new Node(nTwin, node.moves + 1, node);
                 pqTwin.insert(newNode);
+                StdOut.println("new Node twin inserted");
             }
             node = pq.delMin();
             nodeTwin = pqTwin.delMin();
-            numMoves++;
             if (node.board.isGoal()) {
+                StdOut.println("node is goal");
+                numMoves = node.moves;
                 if (node.prevNode == null) {
                     numMoves = 0;
                 }
@@ -63,6 +66,7 @@ public class Solver {
                 break;
             }
             else if (nodeTwin.board.isGoal()) {
+                StdOut.println("node twin is goal");
                 solvable = false;
                 break;
             }
