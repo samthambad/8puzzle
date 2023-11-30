@@ -28,7 +28,6 @@ public class Solver {
         Iterable<Board> neighbours;
         Iterable<Board> neighboursTwin;
         while (true) {
-            numMoves++;
             // add neighbors for every min removed
             neighbours = node.board.neighbors();
             neighboursTwin = nodeTwin.board.neighbors();
@@ -50,7 +49,11 @@ public class Solver {
             }
             node = pq.delMin();
             nodeTwin = pqTwin.delMin();
+            numMoves++;
             if (node.board.isGoal()) {
+                if (node.prevNode == null) {
+                    numMoves = 0;
+                }
                 solutionStack.push(node.board);
                 while (node.prevNode != null) {
                     node = node.prevNode;
