@@ -10,30 +10,40 @@ public class Solver {
 
     private Stack<Board> solutionStack = new Stack<>();
     private int numMoves = 0;
+    private Board firstBoard;
 
     public Solver(Board initial) {
         if (initial == null) {
-            throw new IllegalArgumentException("Argument is null!");
+            throw new IllegalArgumentException();
         }
+        firstBoard = initial;
         // node = board, num of moves to reach board, previous node
-        Node first = new Node(initial, 0, null);
-        MinPQ<Node> pq = new MinPQ<>(pOrder());
+        Node first = new Node(firstBoard, 0, null);
+        MinPQ<Node> pq = new MinPQ<>(pOrder);
+        System.out.println("adding first to pq");
         pq.insert(first);
         numMoves = 0;
         while (true) {
-            Node parent = pq.delMin();
-            if (parent.manhattanVal == 0) {
-                System.out.println("parent deleted: " + parent);
-                solutionStack.push(parent.board);
-                break;
-            }
-            numMoves++;
-            // add neighbors
-            Iterable<Board> neighbours = parent.board.neighbors();
-            for (Board n : neighbours) {
-                Node newNode = new Node(n, numMoves, parent);
-                // only add nodes which are not the same as removed node
-                if (!(!(solutionStack.isEmpty()) && n.equals(solutionStack.peek()))) {
+            if (!(pq.isEmpty())) {
+                Node parent = pq.delMin();
+                // System.out.println("pq not empty" + parent.toString());
+                if (parent.board.isGoal()) {
+                    System.out.println("parent deleted: " + parent);
+                    solutionStack.push(parent.board);
+                    break;
+                }
+                numMoves++;
+                // add neighbors
+                Iterable<Board> neighbours = parent.board.neighbors();
+                for (Board n : neighbours) {
+                    // System.out.println("adding a neighbor");
+                    // only add nodes which are not the same as removed node
+                    if (n.equals(parent.board)) {
+                        // System.out.println("neighbor is same as removed");
+                        continue;
+                    }
+                    Node newNode = new Node(n, numMoves, parent);
+                    // System.out.println("adding new node");
                     pq.insert(newNode);
                 }
             }
@@ -56,8 +66,8 @@ public class Solver {
         }
     }
 
-    private Comparator<Node> pOrder() {
-        return new Comparator<Node>() {
+        private Comparator<Node> pOrder = new Comparator<Node>() 
+        {
             public int compare(Node n1, Node n2) {
                 if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
                     return 1;
@@ -68,7 +78,6 @@ public class Solver {
                 else return 0;
             }
         };
-    }
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
