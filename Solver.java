@@ -11,6 +11,7 @@ public class Solver {
     private Stack<Board> solutionStack = new Stack<>();
     private int numMoves = 0;
     private Board firstBoard;
+    private boolean solvable = false;
 
     public Solver(Board initial) {
         if (initial == null) {
@@ -18,35 +19,59 @@ public class Solver {
         }
         firstBoard = initial;
         // node = board, num of moves to reach board, previous node
-        Node first = new Node(firstBoard, 0, null);
+        Node node = new Node(firstBoard, 0, null);
+        Node nodeTwin = new Node(firstBoard.twin(), 0, null);
         MinPQ<Node> pq = new MinPQ<>(pOrder);
+        MinPQ<Node> pqTwin = new MinPQ<>(pOrder);
         System.out.println("adding first to pq");
-        pq.insert(first);
+        pq.insert(node);
         numMoves = 0;
+        Iterable<Board> neighbours;
+        Iterable<Board> neighboursTwin;
         while (true) {
-            if (!(pq.isEmpty())) {
-                Node parent = pq.delMin();
-                // System.out.println("pq not empty" + parent.toString());
-                if (parent.board.isGoal()) {
-                    System.out.println("parent deleted: " + parent);
-                    solutionStack.push(parent.board);
-                    break;
+            // add neighbors for every min removed
+            neighbours = node.board.neighbors();
+            neighboursTwin = nodeTwin.board.neighbors();
+            for (Board n : neighbours) {
+                // System.out.println("adding a neighbor");
+                // only add nodes which are not the same as removed node
+                if (n.equals(node.board)) {
+                    // System.out.println("neighbor is same as removed");
+                    continue;
                 }
-                numMoves++;
-                // add neighbors
-                Iterable<Board> neighbours = parent.board.neighbors();
-                for (Board n : neighbours) {
-                    // System.out.println("adding a neighbor");
-                    // only add nodes which are not the same as removed node
-                    if (n.equals(parent.board)) {
-                        // System.out.println("neighbor is same as removed");
-                        continue;
-                    }
-                    Node newNode = new Node(n, numMoves, parent);
-                    // System.out.println("adding new node");
-                    pq.insert(newNode);
-                }
+                Node newNode = new Node(n, numMoves, node);
+                // System.out.println("adding new node");
+                pq.insert(newNode);
             }
+            for (Board nTwin : neighboursTwin) {
+                // System.out.println("adding a neighbor");
+                // only add nodes which are not the same as removed node
+                if (nTwin.equals(nodeTwin.board)) {
+                    // System.out.println("neighbor is same as removed");
+                    continue;
+                }
+                Node newNode = new Node(nTwin, numMoves, node);
+                // System.out.println("adding new node twin");
+                pqTwin.insert(newNode);
+            }
+            node = pq.delMin();
+            nodeTwin = pqTwin.delMin();
+            // System.out.println("pq not empty" + parent.toString());
+            if (node.board.isGoal()) {
+                System.out.println("parent deleted: " + node);
+                solutionStack.push(node.board);
+                while (node.prevNode != null) {
+                    Node nodePrev = node.prevNode;
+                    solutionStack.push(nodePrev.board);
+                }
+                solvable = true;
+                break;
+            }
+            else if (nodeTwin.board.isGoal()) {
+                solvable = false;
+                break;
+            }
+            numMoves++;
         }
 
     }
@@ -66,22 +91,21 @@ public class Solver {
         }
     }
 
-        private Comparator<Node> pOrder = new Comparator<Node>() 
-        {
-            public int compare(Node n1, Node n2) {
-                if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
-                    return 1;
-                }
-                else if (n1.manhattanVal + n1.moves > n2.manhattanVal + n2.moves) {
-                    return -1;
-                }
-                else return 0;
+    private Comparator<Node> pOrder = new Comparator<Node>() {
+        public int compare(Node n1, Node n2) {
+            if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
+                return 1;
             }
-        };
+            else if (n1.manhattanVal + n1.moves > n2.manhattanVal + n2.moves) {
+                return -1;
+            }
+            else return 0;
+        }
+    };
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
-        return solutionStack.peek().isGoal();
+        return solvable;
     }
 
     // min number of moves to solve initial board; -1 if unsolvable
