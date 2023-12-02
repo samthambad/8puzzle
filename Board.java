@@ -1,5 +1,3 @@
-
-
 import edu.princeton.cs.algs4.Queue;
 
 public final class Board {
@@ -8,9 +6,9 @@ public final class Board {
     // where tiles[row][col] = tile at (row, col)
     private final int[][] boardArray;
 
-    
+
     private int length;
-    
+
     public Board(int[][] tiles) {
         boardArray = new int[tiles.length][tiles.length];
         for (int i = 0; i < tiles.length; i++) {
@@ -27,9 +25,9 @@ public final class Board {
         toreturn.append(dimension() + "\n");
         for (int[] row : boardArray) {
             for (int num : row) {
-                toreturn.append(" "); 
+                toreturn.append(" ");
                 toreturn.append(num);
-                toreturn.append(" "); 
+                toreturn.append(" ");
             }
             toreturn.append("\n");
         }
@@ -78,12 +76,12 @@ public final class Board {
                     int num = boardArray[i][j];
                     int row = 0;
                     if (num % length != 0) {
-                        row = num/length;
+                        row = num / length;
                     }
                     else {
-                        row = (num/length)-1;
+                        row = (num / length) - 1;
                     }
-                    int col = num - (length*row)-1;
+                    int col = num - (length * row) - 1;
                     int distance = Math.abs(row - i) + Math.abs(col - j);
                     accumulator += distance;
                 }
@@ -102,6 +100,9 @@ public final class Board {
     public boolean equals(Object y) {
         if (y == null || y.getClass() != Board.class) {
             return false;
+        }
+        if (y == this) {
+            return true;
         }
         Board myy = (Board) y;
         if (this.length == myy.length) {
@@ -230,7 +231,7 @@ public final class Board {
             boardCopy[0][1] = tmp;
         }
         return new Board(boardCopy);
-    // unit testing (not graded)
+        // unit testing (not graded)
     }
     // public static void main(String[] args) {
     //     int[][] arr = {{1, 3}, {0, 2}};

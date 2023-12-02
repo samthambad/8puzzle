@@ -21,7 +21,7 @@ public class Solver {
         Node nodeTwin = new Node(initial.twin(), 0, null);
         Comparator<Node> pOrder = new Comparator<Node>() {
             public int compare(Node n1, Node n2) {
-                return Integer.compare(n1.manhattanVal + n1.moves, n2.manhattanVal + n2.moves);
+                return Integer.compare(n1.priority, n2.priority);
             }
         };
         MinPQ<Node> pq = new MinPQ<>(pOrder);
@@ -79,12 +79,14 @@ public class Solver {
         int moves;
         Node prevNode;
         int manhattanVal;
+        int priority;
 
         private Node(Board board, int moves, Node prevNode) {
             this.board = board;
             this.moves = moves;
             this.prevNode = prevNode;
             this.manhattanVal = board.manhattan();
+            this.priority = this.manhattanVal + this.moves;
         }
     }
 
