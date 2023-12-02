@@ -10,17 +10,20 @@ public class Solver {
 
     private Stack<Board> solutionStack = new Stack<>();
     private int numMoves = 0;
-    private Board firstBoard;
     private boolean solvable = false;
 
     public Solver(Board initial) {
         if (initial == null) {
             throw new IllegalArgumentException();
         }
-        firstBoard = initial;
         // node = board, num of moves to reach board, previous node
-        Node node = new Node(firstBoard, 0, null);
-        Node nodeTwin = new Node(firstBoard.twin(), 0, null);
+        Node node = new Node(initial, 0, null);
+        Node nodeTwin = new Node(initial.twin(), 0, null);
+        Comparator<Node> pOrder = new Comparator<Node>() {
+            public int compare(Node n1, Node n2) {
+                return Integer.compare(n1.manhattanVal + n1.moves, n2.manhattanVal + n2.moves);
+            }
+        };
         MinPQ<Node> pq = new MinPQ<>(pOrder);
         MinPQ<Node> pqTwin = new MinPQ<>(pOrder);
         pq.insert(node);
@@ -38,7 +41,6 @@ public class Solver {
                 }
                 Node newNode = new Node(n, node.moves + 1, node);
                 pq.insert(newNode);
-                StdOut.println("new Node inserted");
             }
             for (Board nTwin : neighboursTwin) {
                 // only add nodes which are not the same as removed node
@@ -47,12 +49,10 @@ public class Solver {
                 }
                 Node newNode = new Node(nTwin, node.moves + 1, node);
                 pqTwin.insert(newNode);
-                StdOut.println("new Node twin inserted");
             }
             node = pq.delMin();
             nodeTwin = pqTwin.delMin();
             if (node.board.isGoal()) {
-                StdOut.println("node is goal");
                 numMoves = node.moves;
                 if (node.prevNode == null) {
                     numMoves = 0;
@@ -66,7 +66,6 @@ public class Solver {
                 break;
             }
             else if (nodeTwin.board.isGoal()) {
-                StdOut.println("node twin is goal");
                 solvable = false;
                 break;
             }
@@ -89,17 +88,6 @@ public class Solver {
         }
     }
 
-    private Comparator<Node> pOrder = new Comparator<Node>() {
-        public int compare(Node n1, Node n2) {
-            if (n1.manhattanVal + n1.moves > n2.manhattanVal + n2.moves) {
-                return 1;
-            }
-            else if (n1.manhattanVal + n1.moves < n2.manhattanVal + n2.moves) {
-                return -1;
-            }
-            else return 0;
-        }
-    };
 
     // is the initial board solvable? (see below)
     public boolean isSolvable() {
